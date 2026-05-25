@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { parseLinks } from '$lib/utils/parseLinks';
+	import { normalizeJsonLinksToCsv, parseLinks } from '$lib/utils/parseLinks';
 
 	interface Props {
 		onAddLinks: (links: string[]) => void;
@@ -25,6 +25,32 @@
 		statusMessage = `Added ${parsed.links.length} link${parsed.links.length === 1 ? '' : 's'}.`;
 		bulkInput = '';
 	}
+
+	function handlePaste(event: ClipboardEvent) {
+		const pastedText = event.clipboardData?.getData('text');
+		if (!pastedText) {
+			return;
+		}
+
+		const normalizedCsv = normalizeJsonLinksToCsv(pastedText);
+		if (!normalizedCsv) {
+			return;
+		}
+
+		event.preventDefault();
+
+		const target = event.currentTarget as HTMLTextAreaElement;
+		const selectionStart = target.selectionStart ?? bulkInput.length;
+		const selectionEnd = target.selectionEnd ?? bulkInput.length;
+		const before = bulkInput.slice(0, selectionStart);
+		const after = bulkInput.slice(selectionEnd);
+		const needsSeparator = before.length > 0 && !/[,\n\t;\s]$/.test(before);
+		const insertion = `${needsSeparator ? ', ' : ''}${normalizedCsv}`;
+
+		bulkInput = `${before}${insertion}${after}`;
+		invalidLinks = [];
+		statusMessage = 'Normalized pasted JSON links to a comma-separated list.';
+	}
 </script>
 
 <section class="panel">
@@ -38,6 +64,7 @@
 		bind:value={bulkInput}
 		placeholder="https://example.com&#10;https://svelte.dev&#10;example.org"
 		rows="10"
+		onpaste={handlePaste}
 	></textarea>
 
 	<div class="actions">
