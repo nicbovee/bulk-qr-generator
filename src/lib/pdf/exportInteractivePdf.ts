@@ -70,7 +70,7 @@ export async function exportInteractivePdf({
 		page.drawText(item.label, {
 			x,
 			y: y - 12,
-			size: 8,
+			size: 3,
 			color: rgb(0.2, 0.2, 0.2),
 			maxWidth: item.size
 		});
