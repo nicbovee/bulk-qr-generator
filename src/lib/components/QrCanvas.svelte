@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { onDestroy } from 'svelte';
 	import QrItemCard from '$lib/components/QrItem.svelte';
 	import type { QrItem } from '$lib/layout/types';
@@ -66,6 +67,10 @@
 			size: item.size
 		};
 
+		if (!browser) {
+			return;
+		}
+
 		window.addEventListener('pointermove', handlePointerMove);
 		window.addEventListener('pointerup', stopDragging);
 	}
@@ -87,6 +92,9 @@
 
 	function stopDragging() {
 		dragState = null;
+		if (!browser) {
+			return;
+		}
 		window.removeEventListener('pointermove', handlePointerMove);
 		window.removeEventListener('pointerup', stopDragging);
 	}
