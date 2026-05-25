@@ -58,7 +58,10 @@ function getNextPosition(state: QrComposerState): { x: number; y: number } {
 function labelFromUrl(url: string): string {
 	try {
 		const parsed = new URL(url);
-		return parsed.hostname;
+		const hasMeaningfulPath = parsed.pathname && parsed.pathname !== '/';
+		const path = hasMeaningfulPath ? parsed.pathname : '';
+		const suffix = `${path}${parsed.search}${parsed.hash}`;
+		return `${parsed.hostname}${suffix || '/'}`;
 	} catch {
 		return url;
 	}
