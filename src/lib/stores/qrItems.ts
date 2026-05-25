@@ -18,7 +18,8 @@ const defaultSettings: DocumentSettings = {
 	preset: 'LETTER',
 	orientation: 'portrait',
 	margin: 24,
-	gridSize: 12
+	gridSize: 12,
+	exportMode: 'interactive'
 };
 
 function normalizePageDimensions(settings: DocumentSettings): PageDimensions {

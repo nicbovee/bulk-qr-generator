@@ -1,4 +1,4 @@
-import { PDFDocument, rgb } from 'pdf-lib';
+import { ImageAlignment, PDFDocument, rgb } from 'pdf-lib';
 import type { DocumentSettings, QrItem } from '$lib/layout/types';
 import { normalizePageDimensions } from '$lib/stores/qrItems';
 
@@ -38,7 +38,8 @@ export async function exportInteractivePdf({
 	const pdfDoc = await PDFDocument.create();
 	const pageDimensions = normalizePageDimensions(settings);
 	const page = pdfDoc.addPage([pageDimensions.width, pageDimensions.height]);
-	const form = pdfDoc.getForm();
+	const isInteractiveMode = settings.exportMode === 'interactive';
+	const form = isInteractiveMode ? pdfDoc.getForm() : null;
 
 	for (const [index, item] of items.entries()) {
 		if (!item.qrDataUrl) {
@@ -49,23 +50,27 @@ export async function exportInteractivePdf({
 		const x = settings.margin + item.x;
 		const y = pageDimensions.height - settings.margin - item.y - item.size;
 
-		page.drawImage(image, {
-			x,
-			y,
-			width: item.size,
-			height: item.size
-		});
-
-		// This invisible button gives each QR its own interactive PDF object.
-		const button = form.createButton(`qr_button_${index}_${safeFieldName(item.id)}`);
-		button.addToPage('', page, {
-			x,
-			y,
-			width: item.size,
-			height: item.size,
-			borderWidth: 0,
-			borderColor: rgb(0, 0, 0)
-		});
+		if (form) {
+			// Each QR is rendered as the button field appearance to avoid overlay artifacts in Acrobat.
+			const button = form.createButton(`qr_button_${index}_${safeFieldName(item.id)}`);
+			button.setImage(image, ImageAlignment.Center);
+			button.addToPage('', page, {
+				x,
+				y,
+				width: item.size,
+				height: item.size,
+				borderWidth: 0,
+				borderColor: rgb(1, 1, 1),
+				backgroundColor: rgb(1, 1, 1)
+			});
+		} else {
+			page.drawImage(image, {
+				x,
+				y,
+				width: item.size,
+				height: item.size
+			});
+		}
 
 		page.drawText(item.label, {
 			x,
@@ -74,6 +79,10 @@ export async function exportInteractivePdf({
 			color: rgb(0.2, 0.2, 0.2),
 			maxWidth: item.size
 		});
+	}
+
+	if (form) {
+		form.updateFieldAppearances();
 	}
 
 	const pdfBytes = await pdfDoc.save();

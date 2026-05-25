@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DocumentSettings, PageOrientation, PagePreset } from '$lib/layout/types';
+	import type { DocumentSettings, ExportMode, PageOrientation, PagePreset } from '$lib/layout/types';
 
 	interface Props {
 		settings: DocumentSettings;
@@ -29,6 +29,11 @@
 			onUpdateSettings({ margin: Math.min(120, Math.max(0, margin)) });
 		}
 	}
+
+	function handleExportModeChange(event: Event) {
+		const target = event.currentTarget as HTMLSelectElement;
+		onUpdateSettings({ exportMode: target.value as ExportMode });
+	}
 </script>
 
 <section class="panel">
@@ -54,20 +59,32 @@
 			Margin (pt)
 			<input type="number" min="0" max="120" value={settings.margin} oninput={handleMarginChange} />
 		</label>
+
+		<label>
+			Export mode
+			<select value={settings.exportMode} onchange={handleExportModeChange}>
+				<option value="interactive">Interactive objects</option>
+				<option value="static">Static images</option>
+			</select>
+		</label>
 	</div>
 
 	<p class="counts">{readyItems} / {totalItems} QR images ready</p>
 
 	<div class="actions">
 		<button type="button" onclick={onExportPdf} disabled={totalItems === 0 || readyItems !== totalItems}>
-			Export interactive PDF
+			Export {settings.exportMode} PDF
 		</button>
 		<button type="button" class="clear" onclick={onClear} disabled={totalItems === 0}>Clear all</button>
 	</div>
 
 	<p class="note">
-		Interactive object behavior is optimized for Adobe Acrobat. Other PDF viewers may show static content
-		without editable object controls.
+		{#if settings.exportMode === 'interactive'}
+			Interactive mode is optimized for Adobe Acrobat. Other viewers may show static content or limited
+			form behavior.
+		{:else}
+			Static mode exports plain image content for maximum viewer compatibility and stable printing.
+		{/if}
 	</p>
 </section>
 
