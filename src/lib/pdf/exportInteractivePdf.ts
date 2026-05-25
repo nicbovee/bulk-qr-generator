@@ -19,7 +19,9 @@ function safeFieldName(id: string): string {
 }
 
 function downloadPdf(bytes: Uint8Array, filename: string): void {
-	const blob = new Blob([bytes], { type: 'application/pdf' });
+	const normalizedBytes = new Uint8Array(bytes.byteLength);
+	normalizedBytes.set(bytes);
+	const blob = new Blob([normalizedBytes], { type: 'application/pdf' });
 	const url = URL.createObjectURL(blob);
 	const anchor = document.createElement('a');
 	anchor.href = url;

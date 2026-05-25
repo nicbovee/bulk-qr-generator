@@ -1,42 +1,42 @@
-# sv
+# SvelteKit QR PDF Composer
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A SvelteKit app for bulk QR generation and layout-driven PDF export.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Add unlimited URLs in one batch (newline, comma, tab, or semicolon separated)
+- Auto-generate QR images for each link
+- Drag QR cards around a grid-aligned page workspace
+- Tune page settings (Letter/A4, orientation, margin)
+- Export an interactive-object PDF where each QR has its own overlay object
 
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@0.15.3 create --template minimal --types ts --install npm .
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Local Development
 
 ```sh
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Open the local URL printed by Vite.
 
-To create a production version of your app:
+## Build and Validate
 
 ```sh
+npm run check
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+## PDF Compatibility Notes
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+This project targets **Adobe Acrobat/Reader** first for object-level workflows. Exported PDFs include:
+
+- rendered QR images,
+- and per-QR interactive button overlays to preserve object separation.
+
+Viewer behavior differs:
+
+- **Adobe Acrobat/Reader**: best support for selecting/interacting with per-QR objects.
+- **macOS Preview**: often displays as static content with limited form/object editing.
+- **Browser PDF viewers**: typically render static content; interactive editing controls may not be available.
+
+If the viewer does not expose object editing tools, the PDF still preserves visual placement and print output.

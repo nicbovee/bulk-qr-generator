@@ -27,13 +27,13 @@
 	class:selected
 	class="qr-item"
 	style={`left:${item.x}px;top:${item.y}px;width:${item.size}px;height:${item.size + 26}px;`}
-	on:pointerdown={handlePointerDown}
+	onpointerdown={handlePointerDown}
 >
-	<button class="remove" type="button" aria-label={`Remove ${item.label}`} on:click={() => onRemove(item.id)}>
+	<button class="remove" type="button" aria-label={`Remove ${item.label}`} onclick={() => onRemove(item.id)}>
 		×
 	</button>
 
-	<div class="preview">
+	<div class="preview" style={`height:${item.size}px;`}>
 		{#if item.qrDataUrl}
 			<img src={item.qrDataUrl} alt={`QR code for ${item.label}`} draggable="false" />
 		{:else}
@@ -41,7 +41,13 @@
 		{/if}
 	</div>
 
-	<input value={item.label} on:input={handleLabelInput} on:click|stopPropagation />
+	<input
+		value={item.label}
+		oninput={handleLabelInput}
+		onclick={(event) => {
+			event.stopPropagation();
+		}}
+	/>
 </article>
 
 <style>
@@ -63,7 +69,6 @@
 
 	.preview {
 		width: 100%;
-		height: var(--preview-height, 92px);
 		display: grid;
 		place-items: center;
 		background: #fff;

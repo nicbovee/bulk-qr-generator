@@ -29,14 +29,14 @@
 			onUpdateSettings({ margin: Math.min(120, Math.max(0, margin)) });
 		}
 	}
- </script>
+</script>
 
 <section class="panel">
 	<h2>Export</h2>
 	<div class="controls">
 		<label>
 			Page size
-			<select value={settings.preset} on:change={handlePresetChange}>
+			<select value={settings.preset} onchange={handlePresetChange}>
 				<option value="LETTER">Letter</option>
 				<option value="A4">A4</option>
 			</select>
@@ -44,7 +44,7 @@
 
 		<label>
 			Orientation
-			<select value={settings.orientation} on:change={handleOrientationChange}>
+			<select value={settings.orientation} onchange={handleOrientationChange}>
 				<option value="portrait">Portrait</option>
 				<option value="landscape">Landscape</option>
 			</select>
@@ -52,17 +52,17 @@
 
 		<label>
 			Margin (pt)
-			<input type="number" min="0" max="120" value={settings.margin} on:input={handleMarginChange} />
+			<input type="number" min="0" max="120" value={settings.margin} oninput={handleMarginChange} />
 		</label>
 	</div>
 
 	<p class="counts">{readyItems} / {totalItems} QR images ready</p>
 
 	<div class="actions">
-		<button type="button" on:click={onExportPdf} disabled={totalItems === 0 || readyItems !== totalItems}>
+		<button type="button" onclick={onExportPdf} disabled={totalItems === 0 || readyItems !== totalItems}>
 			Export interactive PDF
 		</button>
-		<button type="button" class="clear" on:click={onClear} disabled={totalItems === 0}>Clear all</button>
+		<button type="button" class="clear" onclick={onClear} disabled={totalItems === 0}>Clear all</button>
 	</div>
 
 	<p class="note">

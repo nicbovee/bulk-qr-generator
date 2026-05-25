@@ -91,6 +91,18 @@
 		window.removeEventListener('pointerup', stopDragging);
 	}
 
+	function handleWorkspacePointerDown(event: PointerEvent) {
+		if (event.target === event.currentTarget) {
+			onSelectItem(null);
+		}
+	}
+
+	function handleWorkspaceKeydown(event: KeyboardEvent) {
+		if (event.key === 'Escape') {
+			onSelectItem(null);
+		}
+	}
+
 	onDestroy(() => {
 		stopDragging();
 	});
@@ -106,7 +118,10 @@
 		<div
 			class="workspace"
 			style={`width:${workspaceWidth}px;height:${workspaceHeight}px;background-size:${gridSize}px ${gridSize}px;`}
-			on:click={() => onSelectItem(null)}
+			role="button"
+			tabindex="0"
+			onpointerdown={handleWorkspacePointerDown}
+			onkeydown={handleWorkspaceKeydown}
 		>
 			{#if items.length === 0}
 				<p class="empty">Add links to start generating QR cards.</p>

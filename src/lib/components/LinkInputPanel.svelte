@@ -41,7 +41,7 @@
 	></textarea>
 
 	<div class="actions">
-		<button type="button" on:click={handleAddLinks}>Add links</button>
+		<button type="button" onclick={handleAddLinks}>Add links</button>
 		<span>{totalItems} total QR items</span>
 	</div>
 

@@ -38,11 +38,11 @@ function getWorkspaceDimensions(settings: DocumentSettings): PageDimensions {
 	};
 }
 
-function getNextPosition(state: QrComposerState, offsetIndex: number): { x: number; y: number } {
+function getNextPosition(state: QrComposerState): { x: number; y: number } {
 	const workspace = getWorkspaceDimensions(state.settings);
 	const slotSize = DEFAULT_ITEM_SIZE + DEFAULT_GAP;
 	const columns = Math.max(1, Math.floor(workspace.width / slotSize));
-	const overallIndex = state.items.length + offsetIndex;
+	const overallIndex = state.items.length;
 	const row = Math.floor(overallIndex / columns);
 	const column = overallIndex % columns;
 
@@ -88,8 +88,8 @@ function addLinks(urls: string[]) {
 	update((state) => {
 		const nextItems = [...state.items];
 
-		urls.forEach((url, offsetIndex) => {
-			const position = getNextPosition({ ...state, items: nextItems }, offsetIndex);
+		urls.forEach((url) => {
+			const position = getNextPosition({ ...state, items: nextItems });
 			nextItems.push({
 				id: crypto.randomUUID(),
 				url,

@@ -97,7 +97,7 @@
 						max="240"
 						step="4"
 						value={selectedItem.size}
-						on:input={handleSelectedSizeChange}
+						oninput={handleSelectedSizeChange}
 					/>
 				</label>
 				<p>{selectedItem.size}pt</p>
